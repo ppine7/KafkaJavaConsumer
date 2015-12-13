@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+
+
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{dd/MMM/yyyy:HH:mm:ss:SSS Z} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+
+    <logger name="com.kafka.consumer" level="info">
+        <appender-ref ref="STDOUT" />
+    </logger>
+</configuration>
