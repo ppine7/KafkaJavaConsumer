@@ -1,0 +1,24 @@
+---
+    # ---------------------------
+    # ZooKeeper
+    # ---------------------------
+
+    - name: ZooKeeper | Ensure ZooKeeper is installed
+      apt: pkg={{item}} state=installed
+      with_items:
+        - zookeeper
+        - zookeeperd
+
+    - name: ZooKeeper | Ensure myid is set to {{node_seq}}
+      template:
+        src: myid
+        dest: /etc/zookeeper/conf/myid
+
+    - name: ZooKeeper | Ensure config is present
+      template: src=zoo.cfg dest=/etc/zookeeper/conf/zoo.cfg
+
+    - name: ZooKeeper | Ensure the service is restarted
+      service: name=zookeeper state=restarted enabled=yes
+
+    - name: ZooKeeper | Ensure ZooKeeper is up
+      wait_for: port=2181

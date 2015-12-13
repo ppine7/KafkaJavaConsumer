@@ -1,0 +1,62 @@
+---
+  - name: Ensure supervisor is installed.
+    apt: pkg=supervisor state=installed
+
+  - name: Stop Supevisor
+    shell: >
+       /etc/init.d/supervisor stop
+
+
+  # ---------------------------
+  # Storm
+  # ---------------------------
+
+  - name: Storm | Ensure {{storm_build}} zip is present
+    get_url:
+      url: "{{storm_mirror}}/{{storm_build}}/{{storm_build}}.zip"
+      dest: "/tmp/{{storm_build}}.zip"
+      owner: "{{install_user}}"
+      group: "{{install_user}}"
+
+  - name: Storm | Ensure zip is extracted
+    unarchive:
+      src: "/tmp/{{storm_build}}.zip"
+      dest: "{{packages_root}}"
+      copy: no
+      creates: "{{packages_root}}/{{storm_build}}"
+      owner: "{{install_user}}"
+      group: "{{install_user}}"
+
+  - name: Storm | Change ownership
+    file: path="{{packages_root}}/{{storm_build}}" owner="{{install_user}}" group="{{install_user}}" recurse=yes
+
+
+  - name: Storm | Ensure "current" symlink is present
+    file: src="{{packages_root}}/{{storm_build}}" dest=/usr/share/storm owner="{{install_user}}" group="{{install_user}}"  state=link
+
+  - name: Storm | Ensure "storm" symlink is present
+    file: src=/usr/share/storm/bin/storm dest=/usr/bin/storm owner="{{install_user}}" group="{{install_user}}" state=link
+
+  - name: create /etc/storm directory for storm
+    file: path=/etc/storm state=directory owner="{{install_user}}" group="{{install_user}}" mode=755
+
+  - name: Move Storm.yaml to backup
+    command: mv /usr/share/storm/conf/storm.yaml /usr/share/storm/conf/storm.yaml.bak
+
+  - name: Storm | Copy storm.yaml
+    template: src=storm.yaml dest=/usr/share/storm/conf/storm.yaml mode=0644 owner="{{install_user}}" group="{{install_user}}"
+
+  - name: Storm | Copy cluster.xml
+    template: src=cluster.xml dest=/usr/share/storm/logback/cluster.xml mode=0644 owner="{{install_user}}" group="{{install_user}}"
+
+  - name: Storm | Ensure "storm.yaml" symlink is present
+    file: src=/usr/share/storm/conf/storm.yaml dest=/etc/storm/storm.yaml owner="{{install_user}}" group="{{install_user}}" state=link
+
+
+  - name: create log directory for storm
+    file: path=/var/log/storm state=directory owner="{{install_user}}" group="{{install_user}}" mode=755
+
+  - name: Storm | Copy  supervisor config  Let the root be owner & Start
+    template: src=supervisor.conf dest="/etc/supervisor/conf.d/storm-{{item}}.conf" mode=0644
+    with_items: services
+    notify: start supervisor daemon
