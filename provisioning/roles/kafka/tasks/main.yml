@@ -1,0 +1,43 @@
+---
+  - name: Ensure supervisor is installed.
+    apt: pkg=supervisor state=installed
+
+  - name: Stop Supevisor
+    shell: >
+       /etc/init.d/supervisor stop
+    # ---------------------------
+    # Kafka
+    # ---------------------------
+
+  - name: "Kafka | Ensure {{kafka_build}} tarball is present"
+    get_url:
+      url: "http://apache.cs.uu.nl/kafka/{{kafka_version}}/{{kafka_build}}.tgz"
+      dest: "/tmp/{{kafka_build}}.tgz"
+      owner: "{{install_user}}"
+      group: "{{install_user}}"
+
+  - name: Kafka | Ensure tar is extracted
+    unarchive:
+      src: "/tmp/{{kafka_build}}.tgz"
+      dest: "{{packages_root}}"
+      copy: no
+      creates: "{{packages_root}}/{{kafka_build}}"
+      owner: "{{install_user}}"
+      group: "{{install_user}}"
+#    unarchive: src=/tmp/{{kafka_build}}.tgz dest=/home/kafka copy=no creates=/home/kafka/{{kafka_build}}
+
+  - name: Kafka | Change ownership
+    file: path="{{packages_root}}/{{kafka_build}}" owner="{{install_user}}" group="{{install_user}}" recurse=yes
+
+  - name: Kafka | Ensure "kafka" symlink is present
+    file: src="{{packages_root}}/{{kafka_build}}" dest="{{kafka_run_dir}}" owner="{{install_user}}" group="{{install_user}}"  state=link
+
+  - name: "create {{kafka_log_dir}} directory for Kafka"
+    file: path={{kafka_log_dir}} state=directory owner="{{install_user}}" group="{{install_user}}" mode=755 recurse=yes
+
+  - name: Kafka | Ensure server.properties is present
+    template: src=server.properties dest="{{kafka_run_dir}}/config/server.properties" mode=0644 owner="{{install_user}}" group="{{install_user}}"
+
+  - name: Kafka | Copy  supervisor config  Let the root be owner & Start
+    template: src=supervisor.conf dest="/etc/supervisor/conf.d/kafka.conf" mode=0644
+    notify: start supervisor daemon

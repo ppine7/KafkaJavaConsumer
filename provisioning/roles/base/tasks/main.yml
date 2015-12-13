@@ -1,0 +1,41 @@
+---
+
+  - name: Update apt cache
+    apt: update_cache=yes cache_valid_time=86400
+
+  - name: Install add-apt-repostory
+    apt: name=software-properties-common state=latest
+
+  - name: Add Oracle Java Repository
+    apt_repository: repo='ppa:webupd8team/java'
+
+
+  # Java
+
+  - name: Accept Java 8 Licence
+    shell: echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | tee /etc/oracle-java-8-licence-acceptance | /usr/bin/debconf-set-selections
+    args:
+      creates: /etc/oracle-java-8-licence-acceptance
+
+  - name: Install Oracle Java 8
+    apt: name={{item}} state=latest
+    with_items:
+      - oracle-java8-installer
+      - ca-certificates
+      - oracle-java8-set-default
+
+  # Unzip
+
+  - name: Ensure Unzip is installed.
+    apt: pkg=unzip state=installed
+
+  #  print("{{ install_user }}")
+
+  - name: Storm | Ensure group install_user exists
+    group: name="{{install_user}}" state=present
+
+  - name: Storm | Ensure user install_user exists
+    user: name="{{install_user}}" group="{{install_user}}"  home="{{install_user_home}}" createhome="true" shell="/bin/bash"
+
+  - name: create package directory
+    file: path="{{packages_root}}" state=directory owner="{{install_user}}" mode=755

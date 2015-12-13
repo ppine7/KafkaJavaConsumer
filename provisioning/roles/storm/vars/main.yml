@@ -1,0 +1,4 @@
+storm_version: 0.9.3
+storm_build: apache-storm-{{storm_version}}
+storm_mirror: http://apache.cs.uu.nl/storm/
+storm_data_dir: /var/data/kafka

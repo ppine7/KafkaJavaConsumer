@@ -1,0 +1,3 @@
+install_user: "app_user"
+install_user_home: "/home/{{install_user}}"
+packages_root: "{{install_user_home}}/packages"

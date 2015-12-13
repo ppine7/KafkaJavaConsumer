@@ -1,0 +1,5 @@
+kafka_version: 0.9.0.0
+kafka_build: kafka_2.11-{{kafka_version}}
+kafka_mirror: http://apache.cs.uu.nl
+kafka_log_dir: /var/log/kafka
+kafka_run_dir: /usr/share/kafka
