@@ -19,12 +19,14 @@ public class KafkaTestMessageProducer implements Callable {
     private String testTopic ;
     private Properties props;
     private Random random = new Random();
+    private String eventBody;
 
-    public KafkaTestMessageProducer(int totalEvents,String testTopic) {
+    public KafkaTestMessageProducer(int totalEvents, String testTopic, String eventBody) {
         this.totalEvents = totalEvents;
         this.testTopic = testTopic ;
+        this.eventBody = eventBody;
         props = new Properties();
-        props.put("bootstrap.servers", "node-1:9092");
+        props.put("bootstrap.servers", "localhost:9092");
         props.put("acks", "0");
         props.put("retries", 0);
         props.put("batch.size", 100);
@@ -63,14 +65,10 @@ public class KafkaTestMessageProducer implements Callable {
 
     @Override
     public Object call() throws Exception {
-        long timeInMs = new Date().getTime();
-
-        String eventNum = String.valueOf(random.nextInt(80000));
-        String msg = "timestamp:" + timeInMs + ", eventType: " + random.nextInt(5);
-
+        String messageKey = String.valueOf(random.nextInt(80000));
         ProducerRecord<byte[], byte[]> record =
-                new ProducerRecord<byte[], byte[]>(testTopic, eventNum.getBytes(), msg.getBytes());
-        System.out.println("sending " + " msg >>> " + msg);
+                new ProducerRecord<byte[], byte[]>(testTopic, messageKey.getBytes(), eventBody.getBytes());
+        System.out.println("sending message: >>>\n " + eventBody);
         producer.send(record);
         //producer.close();
         return null;

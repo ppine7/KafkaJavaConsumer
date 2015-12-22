@@ -32,7 +32,7 @@ public class KafkaConsumerServiceTest {
         ExecutorService pool = Executors.newFixedThreadPool(3);
         //Set<Future<Integer>> set = new HashSet<Future≶Integer>>();
         for (int i=0 ;i<=10 ;i++) {
-            Callable<Integer> callable = new KafkaTestMessageProducer(10,"javatest");
+            Callable<Integer> callable = new KafkaTestMessageProducer(10,"javatest", "testMessage");
             pool.submit(callable);
             //set.add(future);
         }

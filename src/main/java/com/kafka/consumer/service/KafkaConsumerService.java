@@ -36,7 +36,7 @@ public class KafkaConsumerService {
 
     private void initializeConsumerProperties() {
         consumerProperties = new Properties();
-        consumerProperties.put("bootstrap.servers", "node-1:9092");
+        consumerProperties.put("bootstrap.servers", "localhost:9092");
         consumerProperties.put("group.id", "test");
         consumerProperties.put("enable.auto.commit", "true");
         //consumerProperties.put("enable.auto.commit", "false");
