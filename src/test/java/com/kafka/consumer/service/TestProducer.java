@@ -50,10 +50,10 @@ public class TestProducer {
 
     @Test
     public void produceNewMessages() {
+    	String adnId = "55d34e63f21345415a00d4ba";
         for (int i=0 ;i<=10 ;i++) {
-            String eventNonFw = "{\"eventUUID\":\"test-uuid-" + i + "\",\"adnId\":\"testAdnId\",\"profileId\":\"testProfileId\",\"eventTimestampSeconds\":1454443268,\"requestInfo\":{\"referer\":\"https://us.billabong.com/shop/referer\",\"version\":\"HTTP/1.1\",\"method\":\"GET\",\"protocol\":\"http\",\"requestURL\":\"http://f6fd96c0a0594639b58117606941b23a.yottaa.org/jscombine/tc001.html?yocs=_&yoloc=us\",\"shortRequestURL\":\"http://f6fd96c0a0594639b58117606941b23a.yottaa.org/jscombine/tc001.html\"},\"responseInfo\":{\"responseCode\":403,\"contentType\":\"image/x-icon\",\"responseSize\":1621},\"lb\":{\"role\":\"LB\",\"environment\":\"PRODUCTION\",\"dataCenter\":\"USEAST\",\"publicIP\":\"107.23.78.197\"},\"tpu\":{\"role\":\"TPU\",\"environment\":\"PRODUCTION\",\"dataCenter\":\"USEAST\",\"publicIP\":\"54.209.70.43\"},\"clientInfo\":{\"clientIp\":\"4.28.58.19\",\"location\":{\"countryCode\":\"testCountry\",\"region\":\"testRegion\",\"continent\":\"testContinent\",\"longitude\":13.12,\"latitude\":10.1},\"userAgent\":{\"deviceType\":\"COMPUTER\",\"browser\":\"IE\",\"browserVersion\":{\"version\":\"10.0\",\"majorVersion\":\"10\",\"minorVersion\":\"0\"},\"os\":\"WINDOWS\",\"rawRecord\":\"Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)\"}},\"yOptimizations\":{\"profileId\":\"testProfileId\"},\"latencyMetrics\":{\"timeToFirstByteMs\":0.079632},\"varnishCacheHit\":\"HIT\",\"taEventVersion\":\"TA1.1\",\"logsType\":\"VARNISH\",\"rawVarnishLog\":\"99.249.202.250 - [02/Feb/2016:20:01:08 +0000] \\\"GET http://f6fd96c0a0594639b58117606941b23a.yottaa.org/jscombine/tc001.html?yocs=_&yoloc=us HTTP/1.1\\\" 403 1621 \\\"https://us.billabong.com/shop/referer\\\" \\\"Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)\\\" \\\"csi/852552021 cni/012136d1462b ob/111 si/test-uuid-1234 tts/1392916797730 ti/52d77e728b5f02370e04c000 ai/testProfileId\\\" \\\"012136d1462b/[1,-,1392916892340] 01116b174ec5/[hit]\\\" \\\"image/x-icon\\\" \\\"4.28.58.19,207.180.168.68\\\" hit 0.000079632 - test-uuid-1234 \\\"-\\\"\"}";
-            try {
-				kafkaProducer.sendMessage(eventNonFw);
+             try {
+				kafkaProducer.sendMessage(TestUtils.getJsonNonFwEventByUUID("testUUID_"+i, adnId));
 			} catch (Exception e) {
 				fail("Failed to send message #" + i + ": " + e.getMessage());
 			}

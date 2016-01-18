@@ -46,9 +46,9 @@ dependencies {
     compile ('org.springframework:spring-orm:'+springVersion){
         exclude module : 'commons-logging:commons-logging'
     }
+    compile group: 'io.fastjson', name: 'boon', version: 0.33
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.springframework', name: 'spring-test', version: springVersion
-    //compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
     //compile group: 'org.springframework', name: 'spring-oxm', version: springVersion
 
     //compile group: 'org.springframework', name: 'spring-aop', version: springVersion
